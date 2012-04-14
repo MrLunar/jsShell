@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>JS-Shell - Example</title>
+<style type="text/css">
+  div#shell_container {
+    margin: 0 auto;
+  }
+  div#command_history_container, div#command_history {
+    height: 200px;
+    position: relative;
+  }
+</style>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+<script type="text/javascript" src="example_commands.js"></script>
+
+<script type="text/javascript" src="../jquery.js-shell.js"></script>
+
+</head>
+<body>
+
+  <div id="main_container">
+    <div id="command_shell_container">
+      <div id="command_history_container">
+        <div id="command_history">
+        </div>
+      </div>
+
+      <div id="command_input_container">
+        <form id="command_entry_form" action="#">
+          <div>
+            <span class="command_arrow"> > </span><input type="text" id="command_entry" autocomplete="off" size="70" maxlength="70" />
+          </div>
+          <!--<div id="command_carot_overlay"></div>-->
+          <div id="command_cursor" class="cursor_focus"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
