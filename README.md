@@ -9,16 +9,18 @@ It can be used to provide an interactive demo of command line interface (CLI) co
 * Browser links
 * Custom callback functions
 
+![](https://github.com/MrLunar/jsShell/blob/master/docs/jsshell-example.png)
+
 Requirements
 ------------
-* jQuery (only tested on 1.7.2)
+* jQuery (only tested on 1.7.2 so far)
 
 Example Usage
 -------------
 To create the command shell:
 
 ````javascript
-$('div#jsshell_container').jsShell(command_outputs);
+$('div#jsshell_container').jsShell({data: command_outputs});
 ````
 where ```command_outputs``` is a previously defined set of commands and outputs.
 
