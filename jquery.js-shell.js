@@ -59,7 +59,6 @@
       // Required styling
       $cmdHistory.css('overflow', 'hidden');
       $cmdHistory.css('position', 'relative');
-      //$cmdInputContainer.css('margin-top', '10px');
       $cmdInput.css({'display':'block', 'width':'100%', 'border-width':'0'});
       if (!$cmdHistory.height()) $cmdHistory.height('250');   // TODO: Use new method for default settings.
 
@@ -127,6 +126,13 @@
     {
       var arrOutput = new Array();
 
+      // The command will always be the first word
+      var arrCommandParts = strCommand.split(' ');
+      strCommand = arrCommandParts.shift();
+      var strArguments = arrCommandParts.join(' ');
+
+      // TODO: There's is a lot of duplicate code below. May have to move some into a new function.
+
       if (typeof command_outputs[strCommand] == "object")
       {
         if (command_outputs[strCommand].type == 'link')
@@ -147,6 +153,26 @@
             for (var iLoop = 0; iLoop < command_outputs[strCommand].text.length; iLoop++)
             {
               arrOutput.push(command_outputs[strCommand].text[iLoop]);
+            }
+          }
+        }
+        else if (command_outputs[strCommand].type == 'function')
+        {
+          if (typeof(command_outputs[strCommand].callback) == "function")
+          {
+            var arrFnOutput = command_outputs[strCommand].callback(strArguments);
+
+            if (typeof(arrFnOutput) == "string")
+            {
+              arrOutput.push(arrFnOutput);
+            }
+            else if (typeof(arrFnOutput) == "object")
+            {
+              // Assume the output is in an array
+              for (var iLoop = 0; iLoop < arrFnOutput.length; iLoop++)
+              {
+                arrOutput.push(arrFnOutput[iLoop]);
+              }
             }
           }
         }
