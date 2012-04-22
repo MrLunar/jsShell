@@ -9,7 +9,7 @@ It can be used to provide an interactive demo of command line interface (CLI) co
 * Browser links
 * Custom callback functions
 
-![](https://github.com/MrLunar/jsShell/blob/master/docs/jsshell-example.png)
+![](/MrLunar/jsShell/raw/master/docs/jsshell-example.png)
 
 Requirements
 ------------
