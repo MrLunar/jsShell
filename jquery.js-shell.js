@@ -10,6 +10,7 @@
   var iCommandHeight;   // Height of a single line. Multi-line entries will be multiples of this.
   var iHistoryTop;      // The effective height of the command history (will be used as top offset for new entries)
   var command_outputs;
+  var strCommandPrefix;
 
   // Some common elements we will be using throughout
   var $cmdInput,$cmdHistory,$cmdCursor,$cmdForm;
@@ -43,6 +44,16 @@
         return $this;
       }
 
+      if (typeof(options.data) != 'object')
+      {
+        log('no command outputs given');
+        return $this;
+      }
+
+      // Setup the settings
+      command_outputs = options.data;
+      strCommandPrefix = typeof(options.cmd_prefix) == "string" ? options.cmd_prefix : '';
+
       // Create the console HTML
       jsConsole.createConsoleShell($this);
 
@@ -53,17 +64,25 @@
       $cmdCursor = $('div#command_cursor');
       $cmdForm = $('form#command_entry_form');
 
-      // Setup the settings
-      command_outputs = options;
-
       // Required styling
       $cmdHistory.css('overflow', 'hidden');
       $cmdHistory.css('position', 'relative');
-      $cmdInput.css({'display':'block', 'width':'100%', 'border-width':'0'});
+      $cmdInput.css({'width':'100%', 'border-width':'0'});
       if (!$cmdHistory.height()) $cmdHistory.height('250');   // TODO: Use new method for default settings.
 
       // For some reason, browsers keep their own styling on input boxes unless specified directly on the element
       $cmdInput.css({'font-family':$this.css('font-family'), 'font-size':$this.css('font-size')});
+
+      // If there is a prefix, the width of the input box will need reducing.
+      // Also, the margins of the history entries will need altering
+      if (strCommandPrefix != '')
+      {
+        var iPrefixWidth = $('span#command_entry_prefix').width();
+        $cmdInput.css('width', $cmdInput.width() - iPrefixWidth);
+
+        $("<style type='text/css'>div.history_text{margin-left:"+iPrefixWidth+"px} div.history_text_command{margin-left:0}</style>").appendTo("head");
+      }
+
 
       // Calculate height and offset for new history entries
       var iBrowserHack = $.browser.mozilla ? 3 : 0;           // Firefox seems to be 'lower down' and is cutting off the bottom of text
@@ -108,7 +127,7 @@
       var strCommand = $cmdInput.val();
 
       // Create the output history entry of the command (hidden)
-      var strNewID = jsConsole.createCommandHistoryEntry(strCommand, 'history_text_command');
+      var strNewID = jsConsole.createCommandHistoryEntry(strCommandPrefix+strCommand, 'history_text_command');
 
       // Get the output of the command
       var arrOutput = jsConsole.getCommandOutput(strCommand);
@@ -257,7 +276,7 @@
     createConsoleShell: function($container)
     {
       var $history = $('<div id="command_history_container"><div id="command_history"></div></div>');
-      var strInputEntry = '<div><input type="text" id="command_entry" autocomplete="off" /></div>';
+      var strInputEntry = '<div><span id="command_entry_prefix">'+strCommandPrefix+'</span><input type="text" id="command_entry" autocomplete="off" /></div>';
       var $inputForm = $('<div id="command_input_container"><form id="command_entry_form" action="#">'+strInputEntry+'</form></div>');
       $container.append($history).append($inputForm);
     }
