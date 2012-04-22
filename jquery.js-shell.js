@@ -7,14 +7,13 @@
 {
   // Config
   // TODO: Create a proper method of managing plugin settings.
-  var iCommandHeight = 18;  // Height of a single line. Multi-line entries will be multiples of this.
-  var iHistoryTop = 182;    // The effective height of the command history (will be used as top offset for new entries)
-  var iCursorLeftMargin = 17;
+  var iCommandHeight;   // Height of a single line. Multi-line entries will be multiples of this.
+  var iHistoryTop;      // The effective height of the command history (will be used as top offset for new entries)
   var command_outputs;
 
   // Some common elements we will be using throughout
-  var jCommandEntry,jCommandHistory,jCommandCursor,jCommandCarotOverlay,
-      jCommandForm,jCommandShellWindow,jCommandClipboardTip;
+  var $cmdInput,$cmdHistory,$cmdCursor,$cmdForm;
+
 
   /**
    * Main plugin definition.
@@ -27,8 +26,9 @@
     return methods.init.apply(this, arguments);
   };
 
+
   /**
-   * Public methods.
+   * Public methods. Called from the main plugin definition.
    */
   var methods =
   {
@@ -47,19 +47,33 @@
       jsConsole.createConsoleShell($this);
 
       // Common DOM elements we will be using throughout
-      jCommandEntry = $('input#command_entry');
-      jCommandHistory = $('div#command_history');
-      jCommandCursor = $('div#command_cursor');
-      jCommandCarotOverlay = $('div#command_carot_overlay');
-      jCommandForm = $('form#command_entry_form');
-      jCommandShellWindow = $('div#command_shell_window');
-      jCommandClipboardTip = $('div#copy_clipboard_tip');
+      $cmdInputContainer = $('div#command_input_container');
+      $cmdInput = $('input#command_entry');
+      $cmdHistory = $('div#command_history');
+      $cmdCursor = $('div#command_cursor');
+      $cmdForm = $('form#command_entry_form');
 
       // Setup the settings
       command_outputs = options;
 
+      // Required styling
+      $cmdHistory.css('overflow', 'hidden');
+      $cmdHistory.css('position', 'relative');
+      //$cmdInputContainer.css('margin-top', '10px');
+      $cmdInput.css({'display':'block', 'width':'100%', 'border-width':'0'});
+      if (!$cmdHistory.height()) $cmdHistory.height('250');   // TODO: Use new method for default settings.
+
+      // For some reason, browsers keep their own styling on input boxes unless specified directly on the element
+      $cmdInput.css({'font-family':$this.css('font-family'), 'font-size':$this.css('font-size')});
+
+      // Calculate height and offset for new history entries
+      var iBrowserHack = $.browser.mozilla ? 3 : 0;           // Firefox seems to be 'lower down' and is cutting off the bottom of text
+          iBrowserHack = $.browser.webkit ? -1 : iBrowserHack;
+      iCommandHeight = $cmdInputContainer.height();           // TODO: Ability to get custom value from paramters.
+      iHistoryTop = $cmdHistory.height() - iCommandHeight - iBrowserHack;
+
       // Capture command entries
-      jCommandForm.bind('submit.jsShell', jsConsole.processCommand);
+      $cmdForm.bind('submit.jsShell', jsConsole.processCommand);
 
       // Create welcome message entries
       if (typeof(command_outputs.welcome.text) == 'object')
@@ -72,6 +86,8 @@
 
       // Reset the command entry (as some browsers can save the field value)
       jsConsole.resetCommandEntry();
+
+      return $this;
     }
   };
 
@@ -82,17 +98,15 @@
   {
     resetCommandEntry: function()
     {
-      jCommandEntry.val('');
-      jCommandEntry.focus();
-      jCommandCursor.css({ 'margin-left' : iCursorLeftMargin+'px' });
-      jCommandCarotOverlay.css({ 'margin-left' : iCursorLeftMargin+'px' });
-      jCommandCursor.addClass('cursor_focus');
+      $cmdInput.val('');
+      $cmdInput.focus();
+      $cmdCursor.addClass('cursor_focus');
     },
 
     processCommand: function()
     {
       // Get the entered command
-      var strCommand = jCommandEntry.val();
+      var strCommand = $cmdInput.val();
 
       // Create the output history entry of the command (hidden)
       var strNewID = jsConsole.createCommandHistoryEntry(strCommand, 'history_text_command');
@@ -175,7 +189,7 @@
       // Create the entry DIV and append to this history
       iNewTop = iHistoryTop - jsConsole.getCommandHistoryHeight();
       strNewHistoryEntry = '<div id="'+strNewID+'" style="display:block; visibility:hidden; position:relative; top:'+iNewTop+'px;" class="'+strClass+'">'+strEntry+'</div>';
-      jCommandHistory.append(strNewHistoryEntry);
+      $cmdHistory.append(strNewHistoryEntry);
 
       // Move existing history up
       jsConsole.moveCommandHistory(-iCommandHeight, strNewID);
@@ -184,7 +198,7 @@
       $('div#'+strNewID).css({'visibility':'visible'});
 
       // Ensure we're scrolled to the bottom of the history
-      jCommandHistory.attr({ scrollTop: jCommandHistory.attr("scrollHeight") });
+      $cmdHistory.attr({ scrollTop: $cmdHistory.attr("scrollHeight") });
 
       return strNewID;
     },

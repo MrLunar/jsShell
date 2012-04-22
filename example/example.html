@@ -4,19 +4,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>JS-Shell - Example</title>
 <style type="text/css">
-  div#shell_container {
-    margin: 0 auto;
+  div#main_container {
+    width: 100%;
   }
-  div#command_history_container, div#command_history {
-    height: 200px;
-    position: relative;
+  div#command_shell_container {
+    font-family: 'Courier New';
+    margin: 0 auto;
+    width: 600px;
+    border: 1px dashed #000;
+    padding: 5px;
   }
 </style>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
 <script type="text/javascript" src="example_commands.js"></script>
-
 <script type="text/javascript" src="../jquery.js-shell.js"></script>
 
 </head>
@@ -27,7 +29,12 @@
     </div>
   </div>
 
-  <script type="text/javascript">$('div#command_shell_container').jsShell(command_outputs);</script>
+  <script type="text/javascript">
+    $(function()
+    {
+      $('div#command_shell_container').jsShell(command_outputs);
+    });
+  </script>
 
 </body>
 </html>
