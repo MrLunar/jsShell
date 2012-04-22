@@ -1,4 +1,8 @@
-
+/**
+ * jsShell - Interactive command console.
+ *
+ * @author Mark Bowker
+ */
 (function ($)
 {
   // Config
@@ -6,12 +10,11 @@
   var iCommandHeight = 18;  // Height of a single line. Multi-line entries will be multiples of this.
   var iHistoryTop = 182;    // The effective height of the command history (will be used as top offset for new entries)
   var iCursorLeftMargin = 17;
-  var iCursorWidth = 8;
   var command_outputs;
 
   // Some common elements we will be using throughout
-  var jCommandEntry,jCommandHistory,jCommandCursor,jCommandCarotOverlay;
-  var jCommandForm,jCommandShellWindow,jCommandClipboardTip;
+  var jCommandEntry,jCommandHistory,jCommandCursor,jCommandCarotOverlay,
+      jCommandForm,jCommandShellWindow,jCommandClipboardTip;
 
   /**
    * Main plugin definition.
@@ -39,6 +42,9 @@
         log('no element given');
         return $this;
       }
+
+      // Create the console HTML
+      jsConsole.createConsoleShell($this);
 
       // Common DOM elements we will be using throughout
       jCommandEntry = $('input#command_entry');
@@ -89,7 +95,7 @@
       var strCommand = jCommandEntry.val();
 
       // Create the output history entry of the command (hidden)
-      var strNewID = jsConsole.createCommandHistoryEntry(' > '+strCommand, 'history_text_command');
+      var strNewID = jsConsole.createCommandHistoryEntry(strCommand, 'history_text_command');
 
       // Get the output of the command
       var arrOutput = jsConsole.getCommandOutput(strCommand);
@@ -160,7 +166,7 @@
         strClass += ' '+strAdditionalClass;
       }
 
-      // Generate the ID of the entry
+      // Generate the ID of the new entry
       var strNewID = 'history_entry_' + new Date().getTime();
 
       // Parse the entry for display
@@ -203,9 +209,19 @@
         iHistoryHeight += $(this).height();
       });
       return iHistoryHeight;
+    },
+
+    /**
+     * Creates the actual HTML for the shell.
+     */
+    createConsoleShell: function($container)
+    {
+      var $history = $('<div id="command_history_container"><div id="command_history"></div></div>');
+      var strInputEntry = '<div><input type="text" id="command_entry" autocomplete="off" /></div>';
+      var $inputForm = $('<div id="command_input_container"><form id="command_entry_form" action="#">'+strInputEntry+'</form></div>');
+      $container.append($history).append($inputForm);
     }
   };
-
 
   /**
    * Simple wrapper function for console.log()
