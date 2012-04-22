@@ -51,10 +51,18 @@ Let's say we have a program called 'math' that we want to emulate. We could ente
 math 20 + 1
 ```
 
-The shell would call the 'math' callback function, as defined below, and pass through '20 + 1' as the first parameter. The math callback function could then process the command and output the result. The return value of the function should be an array of strings.
+The shell would call the 'math' callback function, as defined below, and pass through '20 + 1' as the first parameter. The math callback function could then process the command and output the result. The return value of the function should be a string or an array of strings.
 
 ```javascript
 command_outputs.math = new Object();
 command_outputs.math.type = 'function';
-command_outputs.math.callback = 'math_function';
+command_outputs.math.callback = function(args) { return math_function(args) };
+
+function math_function(args)
+{
+  // DO MATH OPERATION ON args
+
+  // Send Output as string or array (for multi-line)
+  return 'Math output';
+}
 ```
