@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>jsShell by MrLunar</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/MrLunar/jsShell">Fork On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/MrLunar/jsShell/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/MrLunar/jsShell/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>jsShell</h1>
+          <p>An interactive, JavaScript powered shell prompt.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/MrLunar">MrLunar</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>jsShell - An interactive command line interface.</h1>
+
+<p>Generates a simple command entry shell for a set of pre-defined commands and outputs.</p>
+
+<p>It can be used to provide an interactive demo of command line interface (CLI) commands for any program. Currently, it can handle:</p>
+
+<ul>
+<li>Simple text output</li>
+<li>Browser links</li>
+<li>Custom callback functions</li>
+</ul><p><img src="/MrLunar/jsShell/raw/master/docs/jsshell-example.png" alt=""></p>
+
+<h2>Requirements</h2>
+
+<ul>
+<li>jQuery (only tested on 1.7.2 so far)</li>
+</ul><h2>Example Usage</h2>
+
+<p>To create the command shell:</p>
+
+<div class="highlight">
+<pre><span class="nx">$</span><span class="p">(</span><span class="s1">'div#jsshell_container'</span><span class="p">).</span><span class="nx">jsShell</span><span class="p">({</span><span class="nx">data</span><span class="o">:</span> <span class="nx">command_outputs</span><span class="p">});</span>
+</pre>
+</div>
+
+
+<p>where <code>command_outputs</code> is a previously defined set of commands and outputs.</p>
+
+<p>For example, a simple 'welcome' command could be:</p>
+
+<div class="highlight">
+<pre><span class="nx">command_outputs</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">welcome</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">welcome</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'text'</span><span class="p">;</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">welcome</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">();</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">welcome</span><span class="p">.</span><span class="nx">text</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'type \'help\' for command list'</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<p>Or to open a link in a new window/tab with the command 'github'</p>
+
+<div class="highlight">
+<pre><span class="nx">command_outputs</span><span class="p">.</span><span class="nx">github</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">github</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'link'</span><span class="p">;</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">github</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">'http://github.com/'</span><span class="p">;</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">github</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="s1">'opening GitHub...'</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<h3>Custom Callback Functions</h3>
+
+<p>Create your very own callback function to perform...well...anything you want.</p>
+
+<p>Let's say we have a program called 'math' that we want to emulate. We could enter the following command into the shell</p>
+
+<div class="highlight">
+<pre><span class="nx">math</span> <span class="mi">20</span> <span class="o">+</span> <span class="mi">1</span>
+</pre>
+</div>
+
+
+<p>The shell would call the 'math' callback function, as defined below, and pass through '20 + 1' as the first parameter. The math callback function could then process the command and output the result. The return value of the function should be a string or an array of strings.</p>
+
+<div class="highlight">
+<pre><span class="nx">command_outputs</span><span class="p">.</span><span class="nx">math</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">math</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'function'</span><span class="p">;</span>
+<span class="nx">command_outputs</span><span class="p">.</span><span class="nx">math</span><span class="p">.</span><span class="nx">callback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">math_function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">};</span>
+
+<span class="kd">function</span> <span class="nx">math_function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// DO MATH OPERATION ON args</span>
+
+  <span class="c1">// Send Output as string or array (for multi-line)</span>
+  <span class="k">return</span> <span class="s1">'Math output'</span><span class="p">;</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
